@@ -21,6 +21,19 @@ Helper tool that continuously reads an NGINX log file (or any kind of similar lo
 
 toc::[]
 
+== Prerequisites
+
+Configure NGINX to export these variables:
+
+Have a look at NGINX's https://www.nginx.com/resources/admin-guide/logging-and-monitoring/[Logging and Monitoring] guide. It contains some good examples that contain the `$request_time` and `$upstream_response_time`:
+
+```
+log_format upstream_time '$remote_addr - $remote_user [$time_local] '
+                         '"$request" $status $body_bytes_sent '
+                         '"$http_referer" "$http_user_agent"'
+                         'rt=$request_time uct="$upstream_connect_time" uht="$upstream_header_time" urt="$upstream_response_time"';
+```
+
 == Usage
 
 You can either use a simple configuration, using command-line flags, or create
@@ -545,17 +558,6 @@ This may have several issues:
 > The exporter exports the `<namespace>_http_response_count_total` metric, but not _[other metric that is mentioned in the README]_!
 
 Most metrics require certain values to be present in the access log files that are not present in the NGINX default configuration. Especially, make sure that the access log contains the http://nginx.org/en/docs/http/ngx_http_upstream_module.html#var_upstream_response_time[`$upstream_response_time`], http://nginx.org/en/docs/http/ngx_http_log_module.html#var_request_time[`$request_time`] and/or http://nginx.org/en/docs/http/ngx_http_core_module.html#variables[`$body_bytes_sent`] variables. These need to be enabled in the NGINX configuration (more precisely, the `log_format` setting) and then added to the  format specified for the exporter.
-
-> How can I configure NGINX to export these variables?
-
-Have a look at NGINX's https://www.nginx.com/resources/admin-guide/logging-and-monitoring/[Logging and Monitoring] guide. It contains some good examples that contain the `$request_time` and `$upstream_response_time`:
-
-```
-log_format upstream_time '$remote_addr - $remote_user [$time_local] '
-                         '"$request" $status $body_bytes_sent '
-                         '"$http_referer" "$http_user_agent"'
-                         'rt=$request_time uct="$upstream_connect_time" uht="$upstream_header_time" urt="$upstream_response_time"';
-```
 
 Credits
 -------
